@@ -1,0 +1,51 @@
+{
+  "employees": [
+    {
+      "id": "1775851451230",
+      "name": "Jake",
+      "schedule": {
+        "0": {
+          "shiftId": "OFF"
+        },
+        "1": {
+          "shiftId": "1775851445942"
+        },
+        "2": {
+          "shiftId": "1775851445942"
+        },
+        "3": {
+          "shiftId": "1775851445942"
+        },
+        "4": {
+          "shiftId": "1775851445942"
+        },
+        "5": {
+          "shiftId": "1775851445942"
+        },
+        "6": {
+          "shiftId": "OFF"
+        }
+      }
+    }
+  ],
+  "entries": [
+    {
+      "id": "1775851470822",
+      "employeeId": "1775851451230",
+      "date": "2026-04-10",
+      "timeIn": "17:54",
+      "timeOut": "02:21",
+      "lateMinutes": 54,
+      "earlyLeaveMinutes": 0,
+      "totalWorkedMinutes": 507
+    }
+  ],
+  "shifts": [
+    {
+      "id": "1775851445942",
+      "name": "main",
+      "start": "17:00",
+      "end": "01:00"
+    }
+  ]
+}

@@ -1,0 +1,201 @@
+:root {
+  /* Premium Dark Theme Colors */
+  --bg-color: #0b0f19;
+  --text-color: #f1f5f9;
+  --hint-color: #94a3b8;
+  --button-color: #6366f1;
+  --button-hover: #4f46e5;
+  --button-text-color: #ffffff;
+  --secondary-bg-color: #1e293b;
+
+
+  /* App specific vars */
+  --accent: #2dd4bf;
+  --danger: #ef4444;
+  --success: #10b981;
+  --glass-bg: rgba(30, 41, 59, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.08);
+
+  /* Force override the TG variables to use our premium hardcoded ones so all components use them */
+  --tg-theme-bg-color: var(--bg-color);
+  --tg-theme-text-color: var(--text-color);
+  --tg-theme-hint-color: var(--hint-color);
+  --tg-theme-button-color: var(--button-color);
+  --tg-theme-button-text-color: var(--button-text-color);
+  --tg-theme-secondary-bg-color: var(--secondary-bg-color);
+
+
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark light;
+  color: var(--tg-theme-text-color);
+  background-color: var(--tg-theme-bg-color);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  background: var(--tg-theme-secondary-bg-color);
+  padding: 1rem;
+  text-align: center;
+  border-bottom: 1px solid var(--glass-border);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.nav-tabs {
+  display: flex;
+  background: var(--tg-theme-secondary-bg-color);
+  padding: 0.5rem;
+  gap: 0.5rem;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.nav-tab {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--tg-theme-hint-color);
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.nav-tab.active {
+  background: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: var(--tg-theme-text-color);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  color: var(--tg-theme-hint-color);
+}
+
+.form-group input, .form-group select {
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: var(--tg-theme-secondary-bg-color);
+  border: 1px solid var(--glass-border);
+  color: var(--tg-theme-text-color);
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus, .form-group select:focus {
+  border-color: var(--tg-theme-button-color);
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  width: 100%;
+}
+
+.btn:active {
+  opacity: 0.8;
+}
+
+.employee-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.employee-item:active {
+  transform: scale(0.98);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+th {
+  color: var(--tg-theme-hint-color);
+  font-weight: 500;
+}
+
+.text-danger { color: var(--danger); }
+.text-success { color: var(--success); }
+.text-accent { color: var(--accent); }
