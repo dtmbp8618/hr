@@ -69,8 +69,7 @@ export default function App() {
 
   return (
     <div className="app-container">
-      <div className="header" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-        <span>{t.appTitle}</span>
+      <div className="header" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingRight: '3rem'}}>
         <button 
           className="btn" 
           style={{padding: '0.25rem 0.5rem', width: 'auto'}} 
@@ -78,6 +77,7 @@ export default function App() {
         >
           {lang.toUpperCase()}
         </button>
+        <span>{t.appTitle}</span>
       </div>
       
       <div className="nav-tabs">
