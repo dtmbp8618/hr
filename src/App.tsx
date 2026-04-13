@@ -99,13 +99,41 @@ export default function App() {
     }
   };
 
+  const downloadJSON = () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ employees, entries, shifts }));
+    const a = document.createElement('a');
+    a.href = dataStr;
+    a.download = "HR_Backup.json";
+    a.click();
+  };
+
+  const handleJSONUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target?.result as string);
+        if (data.employees) setEmployees(data.employees);
+        if (data.entries) setEntries(data.entries);
+        if (data.shifts) setShifts(data.shifts);
+        alert("Data successfully restored and pushed to cloud.");
+      } catch(err) {
+        alert("Invalid JSON file format");
+      }
+    };
+    reader.readAsText(file);
+    // Reset file input
+    e.target.value = '';
+  };
+
   if (!role) {
     return <LoginScreen onLogin={handleLogin} t={t} />;
   }
 
   return (
     <div className="app-container">
-      <div className="header" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingRight: '3rem'}}>
+      <div className="header" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingRight: '2.5rem', flexWrap: 'wrap', gap: '0.5rem'}}>
         <div style={{display: 'flex', gap: '0.5rem', alignItems: 'center'}}>
           <button 
             className="btn" 
@@ -129,6 +157,19 @@ export default function App() {
               )}
             </button>
           )}
+
+          {role === 'admin' && (
+            <>
+              <button className="btn" style={{padding: '0.25rem 0.5rem', width: 'auto'}} onClick={downloadJSON} title="Backup Data (JSON)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              </button>
+              <label className="btn" style={{padding: '0.25rem 0.5rem', width: 'auto', cursor: 'pointer', margin: 0, display: 'flex', alignItems: 'center'}} title="Restore Data (JSON)">
+                <input type="file" accept=".json" style={{display: 'none'}} onChange={handleJSONUpload} />
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              </label>
+            </>
+          )}
+
           <button className="btn" style={{padding: '0.25rem 0.5rem', width: 'auto'}} onClick={logout} title="Logout">
              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
           </button>
