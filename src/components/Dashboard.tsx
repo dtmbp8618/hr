@@ -7,7 +7,8 @@ export default function Dashboard({
   entries,
   shifts,
   setEntries,
-  t
+  t,
+  readonly
 }: { 
   employees: Employee[], 
   entries: TimeEntry[],
