@@ -16,6 +16,7 @@ export default function Tracking({
   t: any
 }) {
   const [empId, setEmpId] = useState('');
+  const [empQuery, setEmpQuery] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [timeIn, setTimeIn] = useState('');
   const [timeOut, setTimeOut] = useState('');
@@ -74,6 +75,8 @@ export default function Tracking({
     
     setTimeIn('');
     setTimeOut('');
+    setEmpQuery('');
+    setEmpId('');
   };
 
   const deleteEntry = (id: string) => {
@@ -88,10 +91,24 @@ export default function Tracking({
         
         <div className="form-group">
           <label>{t.employee}</label>
-          <select value={empId} onChange={e => setEmpId(e.target.value)}>
-            <option value="">{t.employee}...</option>
-            {employees.map(e => <option key={e.id} value={e.id}>{e.name}</option>)}
-          </select>
+          <input 
+            type="text" 
+            list="employees-list"
+            value={empQuery} 
+            onChange={e => {
+              setEmpQuery(e.target.value);
+              const matched = employees.find(emp => emp.name.toLowerCase() === e.target.value.toLowerCase());
+              if (matched) {
+                setEmpId(matched.id);
+              } else {
+                setEmpId('');
+              }
+            }}
+            placeholder={`${t.employee}...`}
+          />
+          <datalist id="employees-list">
+            {employees.map(e => <option key={e.id} value={e.name} />)}
+          </datalist>
         </div>
 
         <div className="form-group">
