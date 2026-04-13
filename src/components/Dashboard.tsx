@@ -130,13 +130,50 @@ export default function Dashboard({
     };
   });
 
+  const exportToCSV = () => {
+    let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+    const header = [t.employee, ...daysArray.map(d => d.toString()), t.total, t.sched, t.dev];
+    csvContent += header.join(",") + "\r\n";
+
+    stats.forEach(s => {
+      const row = [
+        `"${s.name}"`,
+        ...daysArray.map(d => {
+          const dayData = s.dayMap[d];
+          if (dayData.worked > 0 || dayData.late > 0 || dayData.early > 0) {
+            return `"${formatMinutesToHHMM(dayData.worked)}"`;
+          }
+          return dayData.isOff ? '"OFF"' : '""';
+        }),
+        `"${formatMinutesToHHMM(s.totalWorkedMonth)}"`,
+        `"${formatMinutesToHHMM(s.totalScheduledMonth)}"`,
+        `"${formatMinutesToHHMM(s.totalLateMonth)}"`
+      ];
+      csvContent += row.join(",") + "\r\n";
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `HR_Tracker_${monthStr}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div>
-      <div className="card">
-        <h2>{t.timetableMatrix}</h2>
-        <div className="form-group" style={{maxWidth: '200px'}}>
-          <input type="month" value={monthStr} onChange={e => setMonthStr(e.target.value)} />
+      <div className="card" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem'}}>
+        <div>
+          <h2>{t.timetableMatrix}</h2>
+          <div className="form-group" style={{maxWidth: '200px'}}>
+            <input type="month" value={monthStr} onChange={e => setMonthStr(e.target.value)} />
+          </div>
         </div>
+        <button className="btn" style={{whiteSpace: 'nowrap'}} onClick={exportToCSV}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '6px'}}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Export CSV (Excel)
+        </button>
       </div>
 
       <div className="card" style={{overflowX: 'auto', padding: '1rem 0'}}>
