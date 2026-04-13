@@ -123,7 +123,7 @@ export default function Tracking({
                  <th>{t.date}</th>
                  <th>{t.in}</th>
                  <th>{t.out}</th>
-                 <th>{t.late}</th>
+                 <th>{t.late} / {t.early}</th>
                  <th>{t.total}</th>
                  <th></th>
                </tr>
@@ -137,8 +137,11 @@ export default function Tracking({
                      <td>{ent.date}</td>
                      <td>{ent.timeIn}</td>
                      <td>{ent.timeOut}</td>
-                     <td className={ent.lateMinutes > 0 ? 'text-danger' : ''}>
-                        {ent.lateMinutes > 0 ? formatMinutesToHHMM(ent.lateMinutes) : '-'}
+                     <td className={(ent.lateMinutes > 0 || ent.earlyLeaveMinutes > 0) ? 'text-danger' : ''}>
+                        {ent.lateMinutes > 0 ? `L: ${formatMinutesToHHMM(ent.lateMinutes)}` : ''}
+                        {(ent.lateMinutes > 0 && ent.earlyLeaveMinutes > 0) ? ' | ' : ''}
+                        {ent.earlyLeaveMinutes > 0 ? `E: ${formatMinutesToHHMM(ent.earlyLeaveMinutes)}` : ''}
+                        {(ent.lateMinutes === 0 && ent.earlyLeaveMinutes === 0) ? '-' : ''}
                      </td>
                      <td className="text-accent">{formatMinutesToHHMM(ent.totalWorkedMinutes)}</td>
                      <td>

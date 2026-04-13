@@ -13,7 +13,8 @@ export default function Dashboard({
   entries: TimeEntry[],
   shifts: ShiftTemplate[],
   setEntries: (e: TimeEntry[]) => void,
-  t: any
+  t: any,
+  readonly?: boolean
 }) {
   const [monthStr, setMonthStr] = useState(new Date().toISOString().slice(0, 7)); // YYYY-MM
   
@@ -22,6 +23,7 @@ export default function Dashboard({
   const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
   const handleCellClick = (empId: string, dateStr: string) => {
+    if (readonly) return;
     const existingEnt = entries.find(e => e.employeeId === empId && e.date === dateStr);
     
     const workedInput = window.prompt(t.editDashboardWorkedTitle, existingEnt ? formatMinutesToHHMM(existingEnt.totalWorkedMinutes) : '');
