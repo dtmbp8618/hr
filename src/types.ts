@@ -31,4 +31,6 @@ export type TimeEntry = {
   lateMinutes: number; 
   earlyLeaveMinutes: number; 
   totalWorkedMinutes: number; 
+  isExcused?: boolean;
+  excuseNote?: string;
 };

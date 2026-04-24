@@ -20,6 +20,10 @@ export default function Tracking({
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [timeIn, setTimeIn] = useState('');
   const [timeOut, setTimeOut] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [isExcused, setIsExcused] = useState(false);
+  const [excuseNote, setExcuseNote] = useState('');
 
   const saveEntry = () => {
     if (!empId || !date || !timeIn || !timeOut) return;
@@ -60,23 +64,62 @@ export default function Tracking({
       totalWorkedMinutes = calc.totalWorkedMinutes;
     }
 
-    const newEntry: TimeEntry = {
-      id: Date.now().toString(),
-      employeeId: emp.id,
-      date,
-      timeIn,
-      timeOut,
-      lateMinutes,
-      earlyLeaveMinutes,
-      totalWorkedMinutes
-    };
+    if (isExcused) {
+      lateMinutes = 0;
+      earlyLeaveMinutes = 0;
+    }
 
-    setEntries([...entries, newEntry]);
+    if (editingId) {
+      setEntries(entries.map(e => e.id === editingId ? {
+        ...e,
+        employeeId: emp.id,
+        date,
+        timeIn,
+        timeOut,
+        lateMinutes,
+        earlyLeaveMinutes,
+        totalWorkedMinutes,
+        isExcused,
+        excuseNote
+      } : e));
+      setEditingId(null);
+    } else {
+      const newEntry: TimeEntry = {
+        id: Date.now().toString(),
+        employeeId: emp.id,
+        date,
+        timeIn,
+        timeOut,
+        lateMinutes,
+        earlyLeaveMinutes,
+        totalWorkedMinutes,
+        isExcused,
+        excuseNote
+      };
+      setEntries([...entries, newEntry]);
+    }
     
     setTimeIn('');
     setTimeOut('');
     setEmpQuery('');
     setEmpId('');
+    setIsExcused(false);
+    setExcuseNote('');
+  };
+
+  const handleEdit = (ent: TimeEntry) => {
+    setEditingId(ent.id);
+    const emp = employees.find(e => e.id === ent.employeeId);
+    if (emp) {
+      setEmpId(emp.id);
+      setEmpQuery(emp.name);
+    }
+    setDate(ent.date);
+    setTimeIn(ent.timeIn);
+    setTimeOut(ent.timeOut);
+    setIsExcused(ent.isExcused || false);
+    setExcuseNote(ent.excuseNote || '');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const deleteEntry = (id: string) => {
@@ -89,26 +132,52 @@ export default function Tracking({
       <div className="card">
         <h2>{t.addTimeEntry}</h2>
         
-        <div className="form-group">
+        <div className="form-group" style={{ position: 'relative' }}>
           <label>{t.employee}</label>
           <input 
             type="text" 
-            list="employees-list"
             value={empQuery} 
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
             onChange={e => {
               setEmpQuery(e.target.value);
-              const matched = employees.find(emp => emp.name.toLowerCase() === e.target.value.toLowerCase());
-              if (matched) {
-                setEmpId(matched.id);
-              } else {
-                setEmpId('');
-              }
+              setEmpId('');
+              setShowSuggestions(true);
             }}
             placeholder={`${t.employee}...`}
           />
-          <datalist id="employees-list">
-            {employees.map(e => <option key={e.id} value={e.name} />)}
-          </datalist>
+          {showSuggestions && (
+            <div style={{
+              position: 'absolute',
+              top: '100%',
+              left: 0,
+              right: 0,
+              backgroundColor: 'var(--bg-color)',
+              border: '1px solid var(--glass-border)',
+              borderRadius: '8px',
+              maxHeight: '200px',
+              overflowY: 'auto',
+              zIndex: 10,
+              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+            }}>
+              {employees.filter(e => e.name.toLowerCase().includes(empQuery.toLowerCase())).map(e => (
+                <div 
+                  key={e.id}
+                  style={{ padding: '0.75rem 1rem', cursor: 'pointer', borderBottom: '1px solid var(--glass-border)' }}
+                  onMouseDown={() => {
+                    setEmpQuery(e.name);
+                    setEmpId(e.id);
+                    setShowSuggestions(false);
+                  }}
+                >
+                  {e.name}
+                </div>
+              ))}
+              {employees.filter(e => e.name.toLowerCase().includes(empQuery.toLowerCase())).length === 0 && (
+                <div style={{ padding: '0.75rem 1rem', color: 'var(--hint-color)' }}>{t.noData}</div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="form-group">
@@ -127,7 +196,42 @@ export default function Tracking({
           </div>
         </div>
 
-        <button className="btn" onClick={saveEntry}>{t.saveEntry}</button>
+        <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <input 
+            type="checkbox" 
+            id="excuseLate" 
+            checked={isExcused} 
+            onChange={e => setIsExcused(e.target.checked)} 
+            style={{ width: 'auto', margin: 0 }}
+          />
+          <label htmlFor="excuseLate" style={{ margin: 0, cursor: 'pointer' }}>{t.excuseLate}</label>
+        </div>
+
+        {isExcused && (
+          <div className="form-group">
+            <input 
+              type="text" 
+              placeholder={t.excuseNote} 
+              value={excuseNote} 
+              onChange={e => setExcuseNote(e.target.value)} 
+            />
+          </div>
+        )}
+
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <button className="btn" onClick={saveEntry}>{editingId ? t.updateEntry : t.saveEntry}</button>
+          {editingId && (
+            <button className="btn" style={{ background: 'var(--glass-bg)' }} onClick={() => {
+              setEditingId(null);
+              setEmpId('');
+              setEmpQuery('');
+              setTimeIn('');
+              setTimeOut('');
+              setIsExcused(false);
+              setExcuseNote('');
+            }}>{t.close}</button>
+          )}
+        </div>
       </div>
 
       <div className="card" style={{overflowX: 'auto'}}>
@@ -155,14 +259,25 @@ export default function Tracking({
                      <td>{ent.timeIn}</td>
                      <td>{ent.timeOut}</td>
                      <td className={(ent.lateMinutes > 0 || ent.earlyLeaveMinutes > 0) ? 'text-danger' : ''}>
-                        {ent.lateMinutes > 0 ? `L: ${formatMinutesToHHMM(ent.lateMinutes)}` : ''}
-                        {(ent.lateMinutes > 0 && ent.earlyLeaveMinutes > 0) ? ' | ' : ''}
-                        {ent.earlyLeaveMinutes > 0 ? `E: ${formatMinutesToHHMM(ent.earlyLeaveMinutes)}` : ''}
-                        {(ent.lateMinutes === 0 && ent.earlyLeaveMinutes === 0) ? '-' : ''}
+                        {ent.isExcused ? (
+                          <span style={{ color: 'var(--accent)', fontSize: '0.85rem' }} title={ent.excuseNote || ''}>
+                            {t.excuseLate}
+                          </span>
+                        ) : (
+                          <>
+                            {ent.lateMinutes > 0 ? `L: ${formatMinutesToHHMM(ent.lateMinutes)}` : ''}
+                            {(ent.lateMinutes > 0 && ent.earlyLeaveMinutes > 0) ? ' | ' : ''}
+                            {ent.earlyLeaveMinutes > 0 ? `E: ${formatMinutesToHHMM(ent.earlyLeaveMinutes)}` : ''}
+                            {(ent.lateMinutes === 0 && ent.earlyLeaveMinutes === 0) ? '-' : ''}
+                          </>
+                        )}
                      </td>
                      <td className="text-accent">{formatMinutesToHHMM(ent.totalWorkedMinutes)}</td>
                      <td>
-                       <span style={{cursor:'pointer', color:'var(--danger)'}} onClick={() => deleteEntry(ent.id)}>✕</span>
+                       <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+                         <span style={{cursor:'pointer', color:'var(--text-color)'}} onClick={() => handleEdit(ent)}>✎</span>
+                         <span style={{cursor:'pointer', color:'var(--danger)'}} onClick={() => deleteEntry(ent.id)}>✕</span>
+                       </div>
                      </td>
                    </tr>
                  );

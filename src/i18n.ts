@@ -39,7 +39,11 @@ export const i18n = {
     timesCount: "times",
     confirmDelete: "Are you sure you want to delete this?",
     editDashboardWorkedTitle: "Enter actual worked time (HH:MM) or leave blank to clear entry:",
-    editDashboardLateTitle: "Enter Late/Early penalites (HH:MM) or leave blank for 00:00:"
+    editDashboardLateTitle: "Enter Late/Early penalites (HH:MM) or leave blank for 00:00:",
+    updateEntry: "Update Entry",
+    edit: "Edit",
+    excuseLate: "Do not count as late/early",
+    excuseNote: "Reason (Optional)"
   },
   ru: {
     appTitle: "Учет рабочего времени",
@@ -79,6 +83,10 @@ export const i18n = {
     timesCount: "раз",
     confirmDelete: "Вы уверены, что хотите удалить это?",
     editDashboardWorkedTitle: "Введите отработанное время (ЧЧ:ММ) или оставьте пустым для удаления:",
-    editDashboardLateTitle: "Введите время опозданий (ЧЧ:ММ) или оставьте пустым для 00:00:"
+    editDashboardLateTitle: "Введите время опозданий (ЧЧ:ММ) или оставьте пустым для 00:00:",
+    updateEntry: "Обновить запись",
+    edit: "Изменить",
+    excuseLate: "Не учитывать опоздание/ранний уход",
+    excuseNote: "Причина (необязательно)"
   }
 };
