@@ -72,15 +72,19 @@ export default function App() {
     });
   }, []);
 
-  // Save Cloud Data On Change
+  // Save Cloud Data On Change (debounced)
   useEffect(() => {
     if (!dataLoaded) return;
     
     if (role !== 'admin') return; // Only admin persists data upward
     
-    import('./utils/cloud').then(({ saveToCloud }) => {
-      saveToCloud({ employees, entries, shifts });
-    });
+    const timer = setTimeout(() => {
+      import('./utils/cloud').then(({ saveToCloud }) => {
+        saveToCloud({ employees, entries, shifts });
+      });
+    }, 1500);
+
+    return () => clearTimeout(timer);
   }, [employees, entries, shifts, dataLoaded, role]);
 
   // UI Config persistence
