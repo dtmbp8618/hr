@@ -43,7 +43,8 @@ export const i18n = {
     updateEntry: "Update Entry",
     edit: "Edit",
     excuseLate: "Do not count as late/early",
-    excuseNote: "Reason (Optional)"
+    excuseNote: "Reason (Optional)",
+    exportPDF: "Export PDF"
   },
   ru: {
     appTitle: "Учет рабочего времени",
@@ -87,6 +88,7 @@ export const i18n = {
     updateEntry: "Обновить запись",
     edit: "Изменить",
     excuseLate: "Не учитывать опоздание/ранний уход",
-    excuseNote: "Причина (необязательно)"
+    excuseNote: "Причина (необязательно)",
+    exportPDF: "Экспорт в PDF"
   }
 };
